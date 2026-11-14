@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="لعبة أسئلة جماعية ممتعة من لاعب إلى أربعة لاعبين، مع نطق صوتي وأسئلة متنوعة.">
+  <title>تحدّي المعرفة | لعبة الأسئلة</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="تحدي المعرفة"><span class="brand-mark">؟</span><span>تحدّي <b>المعرفة</b></span></a>
+    <div class="top-actions">
+      <button class="icon-btn" id="soundToggle" title="تشغيل أو كتم الصوت" aria-label="الصوت">🔊</button>
+      <button class="install-btn" id="installBtn" hidden>＋ تثبيت اللعبة</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="setupScreen" class="screen setup-screen">
+      <div class="hero">
+        <div class="eyebrow"><span class="live-dot"></span> تحدّى أصحابك واختبر معلوماتك</div>
+        <h1>مين فيكم <span class="gradient-text">عبقري؟</span></h1>
+        <p class="hero-copy">لعبة أسئلة سريعة وممتعة. اختاروا المجال، جهّزوا اللاعبين، وسيبدأ التحدّي!</p>
+        <div class="hero-stats">
+          <div><strong>١–٤</strong><span>لاعبين</span></div>
+          <div><strong>٤</strong><span>اختيارات لكل سؤال</span></div>
+          <div><strong>🎙️</strong><span>نطق صوتي</span></div>
+        </div>
+      </div>
+
+      <div class="setup-card glass">
+        <div class="section-heading"><div><span class="step">01</span><h2>إعداد التحدّي</h2></div><span class="muted">ابدأوا في ثوانٍ</span></div>
+        <label class="field-label" for="categorySelect">اختاروا فئة الأسئلة</label>
+        <div class="category-grid" id="categoryGrid">
+          <button class="category-card selected" data-category="football"><span class="category-icon">⚽</span><b>كرة القدم</b><small>ملاعب ونجوم وبطولات</small></button>
+          <button class="category-card" data-category="programming"><span class="category-icon">💻</span><b>البرمجة</b><small>HTML وCSS وJavaScript</small></button>
+          <button class="category-card" data-category="math"><span class="category-icon">🧮</span><b>الحساب</b><small>عمليات وأرقام</small></button>
+          <button class="category-card" data-category="general"><span class="category-icon">🧠</span><b>معلومات عامة</b><small>ثقافة وعلوم متنوعة</small></button>
+        </div>
+        <div class="setup-divider"></div>
+        <div class="section-heading"><div><span class="step">02</span><h2>مين هيلعب؟</h2></div><span class="muted">من لاعب إلى أربعة</span></div>
+        <label class="field-label" for="playerCount">عدد اللاعبين</label>
+        <div class="count-control">
+          <button id="countMinus" class="count-btn" aria-label="تقليل عدد اللاعبين">−</button>
+          <strong id="countValue">2</strong>
+          <button id="countPlus" class="count-btn" aria-label="زيادة عدد اللاعبين">＋</button>
+        </div>
+        <div id="playerFields" class="player-fields"></div>
+        <div class="round-setting">
+          <div><b>عدد الأسئلة</b><small>كل لاعب يجاوب بالتناوب</small></div>
+          <select id="questionCount" aria-label="عدد الأسئلة">
+            <option value="5">٥ أسئلة</option><option value="10" selected>١٠ أسئلة</option><option value="15">١٥ سؤالًا</option>
+          </select>
+        </div>
+        <button id="startBtn" class="primary-btn">ابدأ التحدّي <span>←</span></button>
+        <p class="privacy-note">🎧 تأكد من تفعيل صوت الهاتف لميزة النطق التلقائي.</p>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen" hidden>
+      <div class="game-topline">
+        <button id="exitBtn" class="back-btn">← الإعدادات</button>
+        <div class="round-pill">السؤال <b id="questionNumber">1</b> / <span id="totalQuestions">10</span></div>
+        <button id="repeatQuestionBtn" class="icon-btn" title="إعادة نطق السؤال">🔁</button>
+      </div>
+      <div class="progress-track"><div id="progressBar" class="progress-fill"></div></div>
+      <div id="scoreboard" class="scoreboard"></div>
+      <article class="question-card glass">
+        <div class="question-meta"><span id="categoryBadge" class="category-badge">⚽ كرة القدم</span><span class="sound-hint">🔊 استمع للسؤال</span></div>
+        <div class="question-mark">؟</div>
+        <h2 id="questionText">جاري تحميل السؤال...</h2>
+        <p id="turnText" class="turn-text"></p>
+        <div id="answersGrid" class="answers-grid"></div>
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+      </article>
+      <div class="game-footer"><span>🏆 الإجابة الصحيحة = ١٠ نقاط</span><span id="speechStatus">استمع جيدًا قبل الإجابة</span></div>
+    </section>
+
+    <section id="resultScreen" class="screen result-screen" hidden>
+      <div class="result-card glass">
+        <div class="confetti-icon">🏆</div>
+        <div class="eyebrow">انتهى التحدّي!</div>
+        <h1 id="resultTitle">الفائز هو</h1>
+        <div id="winnerName" class="winner-name">اللاعب الأول</div>
+        <p id="winnerSubtitle" class="hero-copy">أداء رائع!</p>
+        <div id="finalScores" class="final-scores"></div>
+        <div class="result-actions">
+          <button id="replayBtn" class="primary-btn">العبوا مرة أخرى ↻</button>
+          <button id="changeBtn" class="secondary-btn">تغيير الفئة واللاعبين</button>
+        </div>
+        <p class="privacy-note">✨ جرّبوا فئة مختلفة في الجولة القادمة.</p>
+      </div>
+    </section>
+  </main>
+  <footer>صُنعت للمرح والتعلّم <span>✦</span> تحدّي المعرفة</footer>
+  <script src="app.js"></script>
+</body>
+    </html>
